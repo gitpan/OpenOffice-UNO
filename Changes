@@ -1,0 +1,15 @@
+Revision history for Perl extension OpenOffice::UNO.
+
+0.03  Sat Sep  1 19:06:08 CEST 2007
+	- improve the build system to work more reliably out of the box
+	- convert UNO exceptions to Perl exceptions
+	- rename the module from Perluno to OpenOffice::UNO
+	- tested with OOo 2.0 and 2.2
+	- initial CPAN release
+
+0.02  Tue Jan 07 19:47:30 2006
+	- update for OOo2.0.1
+
+0.01  Sat Aug 16 11:13:39 2003
+	- original version; created by h2xs 1.22 with options
+		-A UNO

@@ -2,9 +2,9 @@
  *
  *  $RCSfile: UNO.xs,v $
  *
- *  $Revision: 1.7 $
+ *  $Revision: 1.8 $
  *
- *  last change: $Author: mbarbon $ $Date: 2007/08/30 18:02:38 $
+ *  last change: $Author: mbarbon $ $Date: 2007/09/21 18:00:46 $
  *
  *  The Contents of this file are made available subject to the terms of
  *  either of the following licenses
@@ -61,6 +61,8 @@
 
 #include "UNO.h"
 #include "ppport.h"
+
+#undef realloc
 
 // UNO Runtime Instance
 static PerlRT UNOInstance;

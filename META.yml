@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                OpenOffice-UNO
-version:             0.03
+version:             0.04
 abstract:            interface to OpenOffice's UNO runtime
 license:             open_source
 generated_by:        ExtUtils::MakeMaker version 6.36

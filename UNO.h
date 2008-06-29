@@ -2,9 +2,9 @@
  *
  *  $RCSfile: UNO.h,v $
  *
- *  $Revision: 1.2 $
+ *  $Revision: 1.4 $
  *
- *  last change: $Author: mbarbon $ $Date: 2007/08/26 09:17:12 $
+ *  last change: $Author: mbarbon $ $Date: 2008/06/29 15:19:49 $
  *
  *  The Contents of this file are made available subject to the terms of
  *  either of the following licenses
@@ -138,8 +138,10 @@ typedef struct _PerlRT {
 class UNO_Any {
 public:
 	UNO_Any() {};
+	UNO_Any(char *stype);
 	~UNO_Any() {};
 	UNO_XAny getAny();
+	void assignAny(UNO_XAny any);
 
 	UNO_XInvocation2 xinvoke;
 
@@ -209,6 +211,16 @@ public:
 
 private:
     sal_Int32 ivalue;
+};
+
+class UNO_Int64 : UNO_Any {
+public:
+    UNO_Int64();
+    UNO_Int64(SV *val);
+    ~UNO_Int64();
+
+private:
+    sal_Int64 ivalue;
 };
 
 // Function Prototype

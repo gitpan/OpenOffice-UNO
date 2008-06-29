@@ -2,9 +2,9 @@
  *
  *  $RCSfile: UNO.xs,v $
  *
- *  $Revision: 1.8 $
+ *  $Revision: 1.11 $
  *
- *  last change: $Author: mbarbon $ $Date: 2007/09/21 18:00:46 $
+ *  last change: $Author: mbarbon $ $Date: 2008/06/29 15:19:49 $
  *
  *  The Contents of this file are made available subject to the terms of
  *  either of the following licenses
@@ -114,14 +114,9 @@ UNO::createServices() {
 		UNO_XInterface () );
 }
 
-UNO_Struct::UNO_Struct() {
-}
-
-UNO_Struct::UNO_Struct(char *sname) {
+UNO_Any::UNO_Any(char *sname) {
     ::rtl::OUString soname = ::rtl::OUString::createFromAscii(sname);
 
-    UNO_SAny args(1);
-    UNO_XInterface tif;
     UNO_XAny tstruct;
     UNO_XIdlClass idlclass(UNOInstance.reflection->forName(soname), ::com::sun::star::uno::UNO_QUERY);
     if (! idlclass.is()) {
@@ -129,8 +124,17 @@ UNO_Struct::UNO_Struct(char *sname) {
     }
 
     idlclass->createObject(tstruct);
+    pany = tstruct;
+}
 
-    args[0] <<= tstruct;
+UNO_Struct::UNO_Struct() {
+}
+
+UNO_Struct::UNO_Struct(char *sname) : UNO_Any(sname) {
+    UNO_SAny args(1);
+    UNO_XInterface tif;
+
+    args[0] <<= pany;
     tif = UNOInstance.ssf->createInstanceWithArguments(args);
     if ( ! tif.is() ) {
 	croak("UNO: Proxy creation failed");
@@ -142,7 +146,6 @@ UNO_Struct::UNO_Struct(char *sname) {
 	croak("UNO: XInvocation2 failed to be created");
     }
 
-    pany = tstruct;
     TypeString = strdup(sname);
 }
 
@@ -312,6 +315,11 @@ UNO_Interface::invoke(char *method, UNO_SAny args) {
     return retval;
 }
 
+void
+UNO_Any::assignAny(UNO_XAny any) {
+	pany <<= any;
+}
+
 UNO_XAny
 UNO_Any::getAny() {
 	return pany;
@@ -445,6 +453,11 @@ SVToAny(SV *svp) {
 				break;
 			    }
 
+			    case typelib_TypeClass_HYPER: {
+				a = tany;
+				break;
+			    }
+
 			    default: {
 				croak("Unsupported ref: %d", tany.getValueTypeClass());
 				break;
@@ -487,6 +500,16 @@ SVToAny(SV *svp) {
 				break;
 			    }
 
+			    case typelib_TypeClass_HYPER: {
+				a = tany;
+				break;
+			    }
+
+			    case typelib_TypeClass_SEQUENCE: {
+				a <<= tany;
+				break;
+			    }
+
 			    default: {
 				croak("Unsupported mg ref: %d", tany.getValueTypeClass());
 				break;
@@ -514,7 +537,7 @@ SVToAny(SV *svp) {
 	case SVt_PV: {
 	    // Extract String
 	    char *tstr = SvPVX(svp);
-	    ::rtl::OUString ostr = ::rtl::OUString::createFromAscii(tstr);
+	    ::rtl::OUString ostr = ::rtl::OUString(tstr, SvCUR(svp), SvUTF8(svp) ? RTL_TEXTENCODING_UTF8 : RTL_TEXTENCODING_ISO_8859_1 );
 	    a <<= ostr;
 	    break;
 	}
@@ -691,7 +714,7 @@ AnyToSV(UNO_XAny a) {
 	case typelib_TypeClass_SEQUENCE: {
 	    UNO_SAny sa;
 	    UNOInstance.typecvt->convertTo(a, ::getCppuType(&sa)) >>= sa;
-	    ret = (SV *)SAnyToAV(sa);
+	    ret = newRV_noinc((SV *)SAnyToAV(sa));
 	    break;
 	}
 
@@ -728,7 +751,7 @@ UNO_Boolean::~UNO_Boolean() {
 }
 
 UNO_Int32::UNO_Int32() {
-    sal_Int32 i = sal_False;
+    sal_Int32 i = 0;
     pany = UNO_XAny(&i, getCppuType(&i));
     ivalue = 0;
 }
@@ -740,6 +763,21 @@ UNO_Int32::UNO_Int32(SV *ival) {
 }
 
 UNO_Int32::~UNO_Int32() {
+}
+
+UNO_Int64::UNO_Int64() {
+    sal_Int64 i = 0;
+    pany = UNO_XAny(&i, getCppuType(&i));
+    ivalue = 0;
+}
+
+UNO_Int64::UNO_Int64(SV *ival) {
+    sal_Int64 i = (sal_Int64)SvIV(ival);
+    pany = UNO_XAny(&i, getCppuType(&i));
+    ivalue = i;
+}
+
+UNO_Int64::~UNO_Int64() {
 }
 
 MODULE = OpenOffice::UNO     	PACKAGE = OpenOffice::UNO	PREFIX = UNO_
@@ -792,6 +830,29 @@ CODE:
     name = SvPV(ST(1), len);
     UNO_Struct *tret = THIS->createIdlStruct(name);
     RETVAL = tret;
+}
+OUTPUT:
+    RETVAL
+
+MODULE = OpenOffice::UNO	PACKAGE = OpenOffice::UNO::Any	PREFIX = UNO_
+
+UNO_Any *
+UNO_Any::new(type, value)
+    char *type
+    SV *value
+CODE:
+{
+    UNO_Any *any = new UNO_Any(type);
+    UNO_XAny from = SVToAny(value);
+
+    ::com::sun::star::uno::Type t = any->getAny().getValueType();
+    try {
+        any->assignAny(UNOInstance.typecvt->convertTo(from, t));
+    } catch(::com::sun::star::uno::Exception& e) {
+        UNOCroak(aTHX_ e);
+    }
+
+    RETVAL = any;
 }
 OUTPUT:
     RETVAL
@@ -922,3 +983,17 @@ CODE:
 OUTPUT:
     RETVAL
 
+MODULE = OpenOffice::UNO	PACKAGE = OpenOffice::UNO::Int64	PREFIX = UNO_
+
+UNO_Int64 *
+UNO_Int64::new(...)
+CODE:
+{
+    if ( items == 2 ) {
+        RETVAL = new UNO_Int64(ST(1));
+    } else {
+        RETVAL = new UNO_Int64();
+    }
+}
+OUTPUT:
+    RETVAL

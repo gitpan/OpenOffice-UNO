@@ -3,9 +3,9 @@
 #
 #  $RCSfile: Makefile.PL,v $
 #
-#  $Revision: 1.6 $
+#  $Revision: 1.7 $
 #
-#  last change: $Author: mbarbon $ $Date: 2007/09/21 18:00:46 $
+#  last change: $Author: mbarbon $ $Date: 2008/06/29 14:26:22 $
 #
 #  The Contents of this file are made available subject to the terms of
 #  either of the following licenses
@@ -80,7 +80,7 @@ by using the setsdkenv_unix.sh script or similar.
 **************************************************
 
 EOT
-    exit 1;
+    exit 0;
 }
 
 $sdk_dir = $ENV{'OO_SDK_HOME'};

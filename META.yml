@@ -1,13 +1,22 @@
 --- #YAML:1.0
-name:                OpenOffice-UNO
-version:             0.05
-abstract:            interface to OpenOffice's UNO runtime
-license:             open_source
-author:              
+name:               OpenOffice-UNO
+version:            0.06
+abstract:           interface to OpenOffice's UNO runtime
+author:
     - Bustamam Harun <bustamam@gmail.com>, Mattia Barbon <mbarbon@cpan.org>
-generated_by:        ExtUtils::MakeMaker version 6.44
-distribution_type:   module
-requires:     
+license:            open_source
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+requires:  {}
+resources:
+    homepage:    http://perluno.sourceforge.net/
+    repository:  https://sourceforge.net/scm/?type=hg&group_id=88004
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.48
 meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
-    version: 1.3
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4

@@ -1,10 +1,10 @@
 /*************************************************************************
  *
- *  $RCSfile: UNO.h,v $
+ *  $RCSfile$
  *
- *  $Revision: 1.4 $
+ *  $Revision$
  *
- *  last change: $Author: mbarbon $ $Date: 2008/06/29 15:19:49 $
+ *  last change: $Author$ $Date$
  *
  *  The Contents of this file are made available subject to the terms of
  *  either of the following licenses
@@ -76,6 +76,7 @@
 #include <com/sun/star/script/XTypeConverter.hpp>
 #include <com/sun/star/uno/XComponentContext.hpp>
 #include <com/sun/star/reflection/XIdlClass.hpp>
+#include <com/sun/star/lang/WrappedTargetRuntimeException.hpp>
 #include <com/sun/star/uno/RuntimeException.hpp>
 #include <com/sun/star/beans/XIntrospection.hpp>
 #include <com/sun/star/script/XInvocation2.hpp>

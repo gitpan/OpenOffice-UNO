@@ -1,5 +1,12 @@
 Revision history for Perl extension OpenOffice::UNO.
 
+0.06  Mon Mar 23 21:35:22 CET 2009
+	- OpenOffice.org 3.0 compatibility.
+	- Perl 5.10 compatibility.
+	- Mac OS X compatibility.
+	- when method invocation gives an error, report to Perl the original
+	  exception, not the wrapper exception.
+
 0.05  Sun Jun 29 17:19:32 CEST 2008
 	- correctly handle Unicode when passing data from Perl to UNO
 	  (passing Unicode from UNO to Perl was already OK)

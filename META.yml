@@ -1,12 +1,14 @@
 --- #YAML:1.0
 name:               OpenOffice-UNO
-version:            0.06
+version:            0.06_01
 abstract:           interface to OpenOffice's UNO runtime
 author:
     - Bustamam Harun <bustamam@gmail.com>, Mattia Barbon <mbarbon@cpan.org>
 license:            open_source
 distribution_type:  module
 configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
     ExtUtils::MakeMaker:  0
 requires:  {}
 resources:
@@ -16,7 +18,7 @@ no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.48
+generated_by:       ExtUtils::MakeMaker version 6.54
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4

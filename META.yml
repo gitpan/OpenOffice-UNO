@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               OpenOffice-UNO
-version:            0.06_01
+version:            0.07
 abstract:           interface to OpenOffice's UNO runtime
 author:
     - Bustamam Harun <bustamam@gmail.com>, Mattia Barbon <mbarbon@cpan.org>
